@@ -28,18 +28,17 @@ After starting up the virtual environment, a GUI should pop up for our VM with a
 are "vagrant". Once logged in, you can open up CLion by opening a terminal and entering the follow commands.
 
 ```
-cd <PROJECT ROOT DIRECTORY>
 /opt/clion-2016.2/bin/clion.sh
 ```
 
-This should open up the CLion IDE with all the dependencies configured.
+This should open up the CLion IDE with all the dependencies configured. The root project directory is located in /vagrant. All changed in this directory is synced to the root directory of the Vagrantfile outside of the VM.
 
 ## Running Project
 
 In order to run our project, we must compile and execute it using cmake (inside the virtual environment)
 
 ```
-cd <PROJECT ROOT DIRECTORY>
+cd /vagrant
 mkdir build && cd build
 cmake ..
 make
