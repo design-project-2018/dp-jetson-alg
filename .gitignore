@@ -131,3 +131,6 @@ fabric.properties
 
 # Build Files
 build/*
+
+# Ignore mp4 files
+*.mp4
