@@ -77,10 +77,10 @@ sudo apt-get install -y doxygen
 # 2. INSTALL THE LIBRARY (YOU CAN CHANGE '3.2.0' FOR THE LAST STABLE VERSION)
 
 sudo apt-get install -y unzip wget
-wget https://github.com/opencv/opencv/archive/3.2.0.zip
-unzip 3.2.0.zip
-rm 3.2.0.zip
-mv opencv-3.2.0 OpenCV
+wget https://github.com/opencv/opencv/archive/3.4.0.zip
+unzip 3.4.0.zip
+rm 3.4.0.zip
+mv opencv-3.4.0 OpenCV
 cd OpenCV
 mkdir build
 cd build
@@ -88,3 +88,26 @@ cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON 
 make -j2
 sudo make install
 sudo ldconfig
+cd ..
+
+# 3 . INSTALL THE CONTRIB MODULES
+
+wget https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
+unzip 3.4.0.zip
+rm 3.4.0.zip
+mv opencv_contrib-3.4.0 OpenCV_Contrib
+cd build
+cmake -DOPENCV_EXTRA_MODULES_PATH=../OpenCV_Contrib/modules ..
+make -j2
+sudo make install
+cd ../../
+
+echo -----------------------------------
+echo INSTALL DARKNET
+echo -----------------------------------
+
+git clone https://github.com/pjreddie/darknet
+cd darknet
+make -j2
+wget https://pjreddie.com/media/files/yolo.weights
+cd ..
