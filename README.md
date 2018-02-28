@@ -35,14 +35,14 @@ This should open up the CLion IDE with all the dependencies configured. The root
 
 ## Running Project
 
-In order to run our project, we must compile and execute it using cmake (inside the virtual environment)
+In order to run our project, we must compile and execute it using cmake (inside the virtual environment). As of now the executable takes in a sample video input which is put in as a command line argument.
 
 ```
 cd /vagrant
 mkdir build && cd build
 cmake ..
 make
-./dp_jetson_board
+./dp_jetson_board -source=<ABSOLUTE PATH TO VIDEO FOOTAGE>
 ```
 
 ## Shutting Down Virtual Environment
