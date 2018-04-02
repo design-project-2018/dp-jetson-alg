@@ -13,9 +13,9 @@ using namespace std;
 using namespace cv;
 using namespace cv::dnn;
 
-String MODEL_CONFIG = "/home/vagrant/darknet/cfg/yolo.cfg";
-String MODEL_BINARY = "/home/vagrant/darknet/yolo.weights";
-String CLASS_NAMES = "/home/vagrant/darknet/data/coco.names";
+String MODEL_CONFIG = "/home/nvidia/Desktop/dp-jetson-alg/darknet/cfg/yolo.cfg";
+String MODEL_BINARY = "/home/nvidia/Desktop/dp-jetson-alg/darknet/yolo.weights";
+String CLASS_NAMES = "/home/nvidia/Desktop/dp-jetson-alg/darknet/data/coco.names";
 
 cv::dnn::Net net;
 vector<string> classNamesVec;
