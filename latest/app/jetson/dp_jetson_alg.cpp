@@ -26,7 +26,6 @@ int main(int argc, char** argv)
         return 0;
     }
 
-//    cv::Mat img = cv::imread("/home/yildirim/Dropbox/tayse/deep/1/images/img_3.png");
     cv::Mat img;
     while(true)
     {
