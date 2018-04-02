@@ -1,19 +1,25 @@
-cmake_minimum_required(VERSION 3.5)
-project(dp_jetson_board)
-subdirs(darknet)
-set(CMAKE_CXX_STANDARD 11)
+cmake_minimum_required(VERSION 2.8.11)
 
-find_package(OpenCV 3.4.0 REQUIRED)
+#Suppressing CMAKE 3.0 warnings
+if(POLICY CMP0043)
+    cmake_policy(SET CMP0037 OLD)
+endif()
+
+add_definitions(-std=c++11)
+
+set(PROJECT_NAME dp_jetson_alg)
+
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/)
+
+add_definitions(-DOPENCV)
+add_definitions(-DGPU)
+
+project(${PROJECT_NAME})
+
+find_package(OpenCV REQUIRED)
 find_package(CUDA REQUIRED)
+find_package(Threads REQUIRED)
 
-include_directories(
-        ${OpenCV_INCLUDE_DIRS}
-        ${CUDA_INCLUDE_DIRS}
-)
-
-add_executable(dp_jetson_board
-        main.cpp
-        yolo_detector.cpp
-        yolo_detector.hpp)
-
-target_link_libraries( dp_jetson_board ${OpenCV_LIBS} cuda cudart cublas curand)
+add_subdirectory(src)
+add_subdirectory(yolo)
+add_subdirectory(app)
