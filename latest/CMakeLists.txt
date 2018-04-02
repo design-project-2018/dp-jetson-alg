@@ -7,7 +7,7 @@ endif()
 
 add_definitions(-std=c++11)
 
-set(PROJECT_NAME darknet)
+set(PROJECT_NAME dp_jetson_alg)
 
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/)
 
