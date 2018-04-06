@@ -36,10 +36,10 @@ int main(int argc, char** argv)
 
     // instantiate yolo functions
     Yolo yolo;
-    yolo.setConfigFilePath("/home/nvidia/Desktop/darknet/cfg/yolov2.cfg");
-    yolo.setDataFilePath("/home/nvidia/Desktop/darknet/cfg/coco.data");
-    yolo.setWeightFilePath("/home/nvidia/Desktop/darknet/yolov2.weights");
-    yolo.setNameListFile("/home/nvidia/Desktop/darknet/data/coco.names");
+    yolo.setConfigFilePath("darknet/cfg/yolov2.cfg");
+    yolo.setDataFilePath("darknet/cfg/coco.data");
+    yolo.setWeightFilePath("darknet/yolov2.weights");
+    yolo.setNameListFile("darknet/data/coco.names");
     yolo.setThreshold(0.5);
 
     // instantiate farneback objects

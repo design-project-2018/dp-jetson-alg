@@ -11,7 +11,7 @@ for CUDA enabled development must be installed in order to run this algorithm at
 
 ## Setting Up Development Environment
 
-OpenCV, CLang, and CMake must be installed in the development environment to properly build the project.
+OpenCV, Darknet, CLang, and CMake must be installed in the development environment to properly build the project.
 In addition, the CLion IDE is highly recommended as a development environment. Scripts have been written
 to install these on a linux environment and can be ran using the following commands.
 
@@ -20,9 +20,11 @@ cd <PROJECT ROOT DIRECTORY>/provision
 chmod u+x install_compiler.sh
 chmod u+x install_opencv.sh
 chmod u+x install_clion.sh
+chmod u+x install_darknet.sh
 ./install_compiler.sh
 ./install_opencv.sh
 ./install_clion.sh
+./install_darknet.sh
 ```
 
 Once installed, you can open up CLion by entering the follow command.
