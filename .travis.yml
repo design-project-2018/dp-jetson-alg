@@ -2,3 +2,13 @@ notifications:
     slack: designproject2018:rhfcpmTwX4UsvhNJ9jxyJ1P0
 
 language: cpp
+
+compiler:
+  - gcc
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script: make
