@@ -14,6 +14,8 @@
 using namespace cv;
 using namespace std;
 
+int FRAME_FREQ = 4;
+
 int main(int argc, char** argv)
 {
     if(argc < 2) {
@@ -38,7 +40,7 @@ int main(int argc, char** argv)
     yolo.setDataFilePath("/home/nvidia/Desktop/darknet/cfg/coco.data");
     yolo.setWeightFilePath("/home/nvidia/Desktop/darknet/yolov2.weights");
     yolo.setNameListFile("/home/nvidia/Desktop/darknet/data/coco.names");
-    yolo.setThreshold(0.16);
+    yolo.setThreshold(0.5);
 
     // instantiate farneback objects
     Mat flow;
@@ -48,12 +50,22 @@ int main(int argc, char** argv)
     while(true) {
 
         // capture frame
-        capture >> frame;
-        if(frame.empty())
-            break;
+        for (int i=0; i<FRAME_FREQ; i++) {
+            capture >> frame;
+            if(frame.empty())
+                break;
+        }
 
         // resize frame
-        resize(frame, frame, Size(500,300));
+        resize(frame, frame, Size(600,400));
+
+        // frames
+        Mat originalFrame;
+        Mat yoloFrame;
+        Mat flowFrame;
+        frame.copyTo(originalFrame);
+        frame.copyTo(yoloFrame);
+        frame.copyTo(flowFrame);
 
         // make copy of frame and turn it into gray for optical flow computation
         Mat img;
@@ -74,13 +86,16 @@ int main(int argc, char** argv)
             // draw results
             for(int i = 0; i < detection.size(); i++) {
                 DetectedObject &o = detection[i];
-                rectangle(frame, o.bounding_box, Scalar(0, 0, 255), 2);
 
                 // draw object boxes
+                rectangle(frame, o.bounding_box, Scalar(0, 0, 255), 2);
+                rectangle(yoloFrame, o.bounding_box, Scalar(0, 0, 255), 2);
                 const char *class_name = yolo.getNames()[o.object_class];
                 char str[255];
                 sprintf(str, "%s", class_name);
                 putText(frame, str, Point2f(o.bounding_box.x, o.bounding_box.y), FONT_HERSHEY_SIMPLEX, 0.6,
+                        Scalar(0, 0, 255), 2);
+                putText(yoloFrame, str, Point2f(o.bounding_box.x, o.bounding_box.y), FONT_HERSHEY_SIMPLEX, 0.6,
                         Scalar(0, 0, 255), 2);
 
                 // draw flow vectors
@@ -91,14 +106,20 @@ int main(int argc, char** argv)
                         // draw line at flow direction
                         line(frame, Point(x, y), Point(cvRound(x + flowatxy.x), cvRound(y + flowatxy.y)),
                              Scalar(255, 0, 0));
+                        line(flowFrame, Point(x, y), Point(cvRound(x + flowatxy.x), cvRound(y + flowatxy.y)),
+                             Scalar(255, 0, 0));
                         // draw initial point
                         circle(frame, Point(x, y), 1, Scalar(0, 0, 0), -1);
+                        circle(flowFrame, Point(x, y), 1, Scalar(0, 0, 0), -1);
                     }
                 }
 
             }
             // display
-            imshow("Demo", frame);
+            imshow("Original", originalFrame);
+            imshow("YOLO", yoloFrame);
+            imshow("Farneback", flowFrame);
+            imshow("Combined", frame);
             waitKey(1);
         } else {
             img.copyTo(prevgray);
