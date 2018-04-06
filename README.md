@@ -1,67 +1,48 @@
-# Design Project Jetson Board
+# Design Project Jetson Board Algorithm
 
-This repository holds the code for the program that will be installed onto our Jetson Board. This project will hold
-the core logic for all computer vision computations in the overall design project and will connect to the camera,
-mobile application, and the jetson board server.
+This repository holds the code for the machine learning algorithm process that will be used for real time
+rear end detection. The compiled executable created from this project will be ran as a child process through
+the Design Project Jetson Board Server.
 
 ## Prerequisites
 
-Due to the large number of dependencies, all development is recommended to be done within a vagrant virtual
-environment. Before setting up the project, make sure to install [Vagrant](https://www.vagrantup.com/) and
-[Virtual Box](https://www.virtualbox.org/).
+The code in this project was designed to be run on a NVIDIA Jetson TX2 GPU Board. All the proper drivers required
+for CUDA enabled development must be installed in order to run this algorithm at its highest performing speed.
 
-## Setting Up Virtual Environment
+## Setting Up Development Environment
 
-To setup the virtual environment, we can simply the following lines of code.
+OpenCV, CLang, and CMake must be installed in the development environment to properly build the project.
+In addition, the CLion IDE is highly recommended as a development environment. Scripts have been written
+to install these on a linux environment and can be ran using the following commands.
 
 ```
-cd <PROJECT ROOT DIRECTORY>
-vagrant up
+cd <PROJECT ROOT DIRECTORY>/provision
+chmod u+x install_compiler.sh
+chmod u+x install_opencv.sh
+chmod u+x install_clion.sh
+./install_compiler.sh
+./install_opencv.sh
+./install_clion.sh
 ```
 
-This will start up our VM and build all the dependencies by following the bash script in the provision folder. Any
-dependencies added during development should be included in the script.
-
-## Developing In The Virtual Environment
-
-After starting up the virtual environment, a GUI should pop up for our VM with a login screen. The user and password
-are "vagrant". Once logged in, you can open up CLion by opening a terminal and entering the follow commands.
+Once installed, you can open up CLion by entering the follow command.
 
 ```
 /opt/clion-2016.2/bin/clion.sh
 ```
 
-This should open up the CLion IDE with all the dependencies configured. The root project directory is located in /vagrant. All changed in this directory is synced to the root directory of the Vagrantfile outside of the VM.
-
 ## Running Project
 
-In order to run our project, we must compile and execute it using cmake (inside the virtual environment). As of now the executable takes in a sample video input which is put in as a command line argument.
+In order to run our project, we must compile it using cmake which will build an executable file.
+As of now the executable takes in a sample video input which is put in as a command line argument.
+You can run the project with the following commands:
 
 ```
-cd /vagrant
+cd <PROJECT ROOT DIRECTORY>
 mkdir build && cd build
-cmake ..
-make
-./dp_jetson_board -source=<ABSOLUTE PATH TO VIDEO FOOTAGE>
-```
-
-## Shutting Down Virtual Environment
-
-When not developing, be sure to shut down your virtual environment so the memory can be freed up on the computer for
-other tasks. To shut down the virtual environment, enter the follow commands in terminal (outside of the virtual env).
-
-```
-cd <PROJECT ROOT DIRECTORY>
-vagrant halt
-```
-
-## Destroying The Virtual Environment
-
-In the case you would like to destroy the virtual environment, follow the following commands (outside of the VM).
-
-```
-cd <PROJECT ROOT DIRECTORY>
-vagrant destroy
+cmake .. && make
+cd ..
+./dp_jetson_board <PATH TO VIDEO FOOTAGE>
 ```
 
 ## Deploying The Project

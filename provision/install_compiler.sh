@@ -1,4 +1,3 @@
-CLION_VERSION=2016.2
 CLANG_VERSION=3.8
 
 apt-get update && apt-get -y upgrade && apt-get -y autoremove
@@ -21,15 +20,4 @@ sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 echo -----------------------------------
 echo INSTALL CMAKE
 echo -----------------------------------
-sudo apt-get -y install build-essentials cmake
-
-
-echo -----------------------------------
-echo INSTALL DARKNET
-echo -----------------------------------
-
-git clone https://github.com/pjreddie/darknet
-cd darknet
-make -j2
-wget https://pjreddie.com/media/files/yolo.weights --no-check-certificate
-cd ..
+sudo apt-get -y install cmake

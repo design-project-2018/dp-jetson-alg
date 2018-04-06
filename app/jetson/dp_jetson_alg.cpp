@@ -99,8 +99,8 @@ int main(int argc, char** argv)
                         Scalar(0, 0, 255), 2);
 
                 // draw flow vectors
-                for (int y = o.bounding_box.y; y < o.bounding_box.y + o.bounding_box.height; y += 5) {
-                    for (int x = o.bounding_box.x; x < o.bounding_box.x + o.bounding_box.width; x += 5) {
+                for (int y = o.bounding_box.y; y < o.bounding_box.y + o.bounding_box.height; y += 12) {
+                    for (int x = o.bounding_box.x; x < o.bounding_box.x + o.bounding_box.width; x += 12) {
                         // get the flow from y, x position * 10 for better visibility
                         const Point2f flowatxy = flow.at<Point2f>(y, x) * 10;
                         // draw line at flow direction
