@@ -5,3 +5,13 @@ language: cpp
 
 compiler:
   - gcc
+
+before_script:
+  - cd provision
+  - ./install_opencv.sh
+  - cd ..
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script: make
