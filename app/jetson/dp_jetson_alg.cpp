@@ -53,7 +53,7 @@ int main(int argc, char** argv)
             break;
 
         // resize frame
-        resize(frame, frame, Size(600,400));
+        resize(frame, frame, Size(500,300));
 
         // make copy of frame and turn it into gray for optical flow computation
         Mat img;
