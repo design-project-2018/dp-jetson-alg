@@ -1,18 +1,16 @@
 notifications:
     slack: designproject2018:rhfcpmTwX4UsvhNJ9jxyJ1P0
 
+sudo: required
+
 language: cpp
 
 compiler:
   - gcc
 
 before_script:
-  - cd provision
-  - chmod u+x install_opencv.sh
-  - ./install_opencv.sh
-  - cd ..
-  - mkdir build
-  - cd build
+  - provision/install_opencv.sh
+  - mkdir build && cd build
   - cmake ..
 
 script: make
