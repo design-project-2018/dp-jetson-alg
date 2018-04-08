@@ -45,17 +45,6 @@ cd build
 cmake -DWITH_CUDA=ON -DWITH_CUBLAS=ON -DWITH_V4L=ON -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON -DENABLE_PRECOMPILED_HEADERS=OFF ..
 make -j2
 sudo make install
+sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
 sudo ldconfig
-cd ..
-
-# 3 . INSTALL THE CONTRIB MODULES
-
-wget https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
-unzip 3.4.0.zip
-rm 3.4.0.zip
-mv opencv_contrib-3.4.0 OpenCV_Contrib
-cd build
-cmake -DOPENCV_EXTRA_MODULES_PATH=../OpenCV_Contrib/modules ..
-make -j2
-sudo make install
 cd ../../

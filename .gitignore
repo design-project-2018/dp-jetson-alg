@@ -2,6 +2,8 @@
 ### Vagrant template
 # General
 .vagrant/
+darknet/*
+dp_jetson_alg
 
 # Log files (if you are creating logs in debug mode, uncomment this)
 # *.logs
