@@ -11,6 +11,7 @@ include_directories(${Boost_INCLUDE_DIR})
 
 add_executable(dp_jetson_alg dp_jetson_alg.cpp)
 add_executable(object_extractor object_extractor.cpp)
+add_executable(optical_flow_extractor optical_flow_extractor.cpp)
 target_link_libraries(
 		dp_jetson_alg
         ${DARKNET_CORE_LIBNAME}
@@ -37,3 +38,14 @@ target_link_libraries(
 		${CUDA_curand_LIBRARY}
 		${CMAKE_THREAD_LIBS_INIT}
 )
+target_link_libraries(
+        optical_flow_extractor
+        python2.7
+        ${Boost_LIBRARIES}
+        ${OpenCV_LIBRARIES}
+        ${CUDA_LIBRARIES}
+        ${CUDA_CUBLAS_LIBRARIES}
+        ${CUDA_curand_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+)
+
