@@ -33,7 +33,7 @@ Once installed, you can open up CLion by entering the follow command.
 /opt/clion-2016.2/bin/clion.sh
 ```
 
-## Running Project
+## Running Main Algorithm
 
 In order to run our project, we must compile it using cmake which will build an executable file.
 As of now the executable takes in a sample video input which is put in as a command line argument.
@@ -45,6 +45,21 @@ mkdir build && cd build
 cmake .. && make
 cd ..
 ./dp_jetson_board <PATH TO VIDEO FOOTAGE>
+```
+
+## Running Object Extractor
+
+The object extractor function, takes in an input footage and performs yolo detection on each frame.
+The result is then outputted to a json file that will be used train the model.
+
+The object extractor can be run with the following commands:
+
+```
+cd <PROJECT ROOT DIRECTORY>
+mkdir build && cd build
+cmake .. && make
+cd ..
+./object_extractor <PATH TO INPUT VIDEO> <OUTPUT FOLDER>
 ```
 
 ## Deploying The Project
