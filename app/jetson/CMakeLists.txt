@@ -51,6 +51,9 @@ target_link_libraries(
 )
 target_link_libraries(
         preprocessor
+        ${DARKNET_CORE_LIBNAME}
+	${DARKNET_CUDA_LIBNAME}
+	${DARKNET_WRAPPER_LIBRARIES}
         python2.7
         ${Boost_LIBRARIES}
         ${OpenCV_LIBRARIES}

@@ -11,6 +11,26 @@
 #include <sstream>
 #include <unistd.h>
 
+#include <fstream>
+
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/video/tracking.hpp>
+#include <vector>
+#include <stdio.h>
+#include <stdarg.h>
+#include <math.h>
+
+#include <yolo.h>
+
+using namespace cv;
+using namespace std;
+
+int frame_width = 224;
+int frame_height = 224;
+
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
 class connection_metadata {
@@ -230,26 +250,104 @@ class websocket_endpoint {
 };
 
 
-int main() {
+int main(int argc, char** argv) {
+
+    if(argc < 2) {
+        fprintf(stderr, "usage: %s <videofile>\n", argv[0]);
+        return 0;
+    }
+
+    // capture video
+    VideoCapture capture(argv[1]);
+    if(!capture.isOpened())
+    {
+        cout << "cannot read video file" << std::endl;
+        return 0;
+    }
 
     // connect to websocket
     websocket_endpoint endpoint;
     int id = endpoint.connect("ws://localhost:8000");
     if (id != -1) {
-        std::cout << "> Created connection with id " << id << std::endl;
+        cout << "> Created connection with id " << id << endl;
     }
     usleep(3000000);
 
-    // send command
-    std::string msg = "Xiaolongbao";
-    std::cout << "Sending message: " << msg << std::endl;
-    endpoint.send(id,msg);
+    // to store current frame
+    Mat frame;
+
+    // instantiate yolo functions
+    Yolo yolo;
+    yolo.setConfigFilePath("/home/nvidia/Desktop/dp-jetson-alg/darknet/cfg/yolov2.cfg");
+    yolo.setDataFilePath("/home/nvidia/Desktop/dp-jetson-alg/darknet/cfg/coco.data");
+    yolo.setWeightFilePath("/home/nvidia/Desktop/dp-jetson-alg/darknet/yolov2.weights");
+    yolo.setNameListFile("/home/nvidia/Desktop/dp-jetson-alg/darknet/data/coco.names");
+    yolo.setThreshold(0.3);
+
+    // keep track of frame number
+    int frame_num = 0;
+
+    // open file stream for writing result to
+    stringstream result;
+    result << "{" << std::endl;
+    result << "    \"frames\": [" << endl;
+
+    // repeatedly do computations for each frame
+    while(true) {
+
+        // capture frame
+        capture >> frame;
+        frame_num++;
+        if(frame.empty())
+            break;
+
+        // resize frame
+        resize(frame, frame, Size(frame_width,frame_height));
+
+        // perform yolo
+        vector<DetectedObject> detection;
+        yolo.detect(frame, detection);
+
+        result << "        {" << std::endl;
+        result << "            \"id\": " << frame_num << "," << endl;
+        result << "            \"objects\": [" << endl;
+
+        // write results to file stream
+        for(int i = 0; i < detection.size(); i++) {
+            DetectedObject &o = detection[i];
+
+            result << "                {" << std::endl;
+            result << "                    \"id\": " << i << "," << endl;
+            result << "                    \"type\": " << o.object_class << "," << endl;
+            result << "                    \"probability\": " << o.prob << "," << endl;
+            result << "                    \"x\": " << int(o.bounding_box.x) << "," << endl;
+            result << "                    \"y\": " << int(o.bounding_box.y) << "," << endl;
+            result << "                    \"width\": " << int(o.bounding_box.width) << "," << endl;
+            result << "                    \"height\": " << int(o.bounding_box.height) << endl;
+            if (i == detection.size() - 1) {
+                result << "                }" << endl;
+            } else {
+                result << "                }," << endl;
+            }
+        }
+        result << "            ]" << endl;
+        if (frame_num == 100) {
+            result << "        }" << endl;
+        } else {
+            result << "        }," << endl;
+        }
+    }
+    // finish writing to file
+    result << "    ]" << endl;
+    result << "}" << endl;
+
+    endpoint.send(id, result.str());
 
     usleep(3000000);
 
     // close connection
     int close_code = websocketpp::close::status::normal;
-    std::string reason = "Ending process";
+    string reason = "Ending process";
     endpoint.close(id, close_code, reason);
 
     usleep(3000000);
