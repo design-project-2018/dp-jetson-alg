@@ -1,0 +1,8 @@
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/install.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/list_install_components.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/edit_cache.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/sioclient.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/rebuild_cache.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/sioclient_tls.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/install/strip.dir
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/CMakeFiles/install/local.dir

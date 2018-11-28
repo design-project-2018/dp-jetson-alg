@@ -1,0 +1,8 @@
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/include/sio_client.h
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/include/sio_message.h
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/include/sio_socket.h
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/lib/Release/libsioclient.a
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/lib/Release/libsioclient_tls.a
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/lib/Release/libboost_system.a
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/lib/Release/libboost_date_time.a
+/home/nvidia/Desktop/dp-jetson-alg/socket.io-client-cpp/build/lib/Release/libboost_random.a
