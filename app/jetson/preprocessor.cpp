@@ -306,12 +306,12 @@ int main(int argc, char** argv) {
 
         // open stream for writing packet data to be sent to web socket
         stringstream packet;
-        packet << "{" << endl;
-        packet << "    \"frame_id\": " << frame_num << "," << endl;
+        packet << "{";
+        packet << "\"frame_id\":" << frame_num << ",";
 
         // path to original frame
         string file = output_folder + to_string(frame_num) + "-original.jpg";
-        packet << "    \"original_frame\": \"" << file << "\"," << endl;
+        packet << "\"original_frame\":\"" << file << "\",";
         imwrite( file, frame );
 
         // perform optical flow
@@ -354,13 +354,13 @@ int main(int argc, char** argv) {
         }
         // path to flow frame
         file = output_folder + to_string(frame_num) + "-flow.jpg";
-        packet << "    \"flow_frame\": \"" << file << "\"," << endl;
+        packet << "\"flow_frame\":\"" << file << "\",";
         imwrite( file, flowMask );
 
         // perform yolo
         vector<DetectedObject> detection;
         yolo.detect(frame, detection);
-        packet << "    \"objects\": [" << endl;
+        packet << "\"objects\":[" << endl;
 
         // write results to file stream
         for(int i = 0; i < detection.size(); i++) {
@@ -374,25 +374,25 @@ int main(int argc, char** argv) {
             putText(yoloFrame, str, Point2f(o.bounding_box.x, o.bounding_box.y), FONT_HERSHEY_SIMPLEX, 0.6,
                     Scalar(0, 0, 255), 2);
 
-            packet << "        {" << endl;
-            packet << "            \"id\": " << i << "," << endl;
-            packet << "            \"type\": " << o.object_class << "," << endl;
-            packet << "            \"probability\": " << o.prob << "," << endl;
-            packet << "            \"x\": " << int(o.bounding_box.x) << "," << endl;
-            packet << "            \"y\": " << int(o.bounding_box.y) << "," << endl;
-            packet << "            \"width\": " << int(o.bounding_box.width) << "," << endl;
-            packet << "            \"height\": " << int(o.bounding_box.height) << endl;
+            packet << "{";
+            packet << "\"id\": " << i << ",";
+            packet << "\"type\": " << o.object_class << ",";
+            packet << "\"probability\": " << o.prob << ",";
+            packet << "\"x\": " << int(o.bounding_box.x) << ",";
+            packet << "\"y\": " << int(o.bounding_box.y) << ",";
+            packet << "\"width\": " << int(o.bounding_box.width) << ",";
+            packet << "\"height\": " << int(o.bounding_box.height);
             if (i == detection.size() - 1) {
-                packet << "        }" << endl;
+                packet << "}";
             } else {
-                packet << "        }," << endl;
+                packet << "},";
             }
         }
-        packet << "    ]," << endl;
+        packet << "],";
 
         // path to yolo frame
         file = output_folder + to_string(frame_num) + "-yolo.jpg";
-        packet << "    \"yolo_frame\": \"" << file << "\"" << endl;
+        packet << "\"yolo_frame\":\"" << file << "\"";
         imwrite( file, yoloFrame );
 
         packet << "}" << endl;
