@@ -399,7 +399,7 @@ int main(int argc, char** argv) {
         endpoint.send(id, packet.str());
     }
 
-    usleep(30000000000);
+    usleep(300000000);
 
     // close connection
     cout << "Closing web socket connection." << endl;
