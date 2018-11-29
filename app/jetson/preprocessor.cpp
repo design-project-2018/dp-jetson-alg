@@ -317,10 +317,8 @@ int main(int argc, char** argv) {
         // perform optical flow
         Mat flowMask = Mat(frame_width, frame_height, CV_8UC3, Scalar(255,255,255));
 
-        Mat originalFrame;
         Mat flowFrame;
         Mat yoloFrame;
-        frame.copyTo(originalFrame);
         frame.copyTo(flowFrame);
         frame.copyTo(yoloFrame);
 
@@ -401,7 +399,7 @@ int main(int argc, char** argv) {
         endpoint.send(id, packet.str());
     }
 
-    usleep(3000000);
+    usleep(30000000000);
 
     // close connection
     cout << "Closing web socket connection." << endl;
