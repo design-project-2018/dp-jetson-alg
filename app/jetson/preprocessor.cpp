@@ -249,8 +249,9 @@ class websocket_endpoint {
         int m_next_id;
 };
 
-
 int main(int argc, char** argv) {
+
+    string output_folder = "/home/nvidia/Downloads/output/";
 
     if(argc < 2) {
         fprintf(stderr, "usage: %s <videofile>\n", argv[0]);
@@ -271,10 +272,14 @@ int main(int argc, char** argv) {
     if (id != -1) {
         cout << "> Created connection with id " << id << endl;
     }
-    usleep(3000000);
+    usleep(1000000);
 
     // to store current frame
     Mat frame;
+
+    // instantiate farneback objects
+    Mat flow;
+    UMat flowUmat, prevgray;
 
     // instantiate yolo functions
     Yolo yolo;
@@ -286,11 +291,6 @@ int main(int argc, char** argv) {
 
     // keep track of frame number
     int frame_num = 0;
-
-    // open file stream for writing result to
-    stringstream result;
-    result << "{" << std::endl;
-    result << "    \"frames\": [" << endl;
 
     // repeatedly do computations for each frame
     while(true) {
@@ -304,48 +304,107 @@ int main(int argc, char** argv) {
         // resize frame
         resize(frame, frame, Size(frame_width,frame_height));
 
+        // open stream for writing packet data to be sent to web socket
+        stringstream packet;
+        packet << "{" << endl;
+        packet << "    \"frame_id\": " << frame_num << "," << endl;
+
+        // path to original frame
+        string file = output_folder + to_string(frame_num) + "-original.jpg";
+        packet << "    \"original_frame\": \"" << file << "\"," << endl;
+        imwrite( file, frame );
+
+        // perform optical flow
+        Mat flowMask = Mat(frame_width, frame_height, CV_8UC3, Scalar(255,255,255));
+
+        Mat originalFrame;
+        Mat flowFrame;
+        Mat yoloFrame;
+        frame.copyTo(originalFrame);
+        frame.copyTo(flowFrame);
+        frame.copyTo(yoloFrame);
+
+        // make copy of frame and turn it into gray for optical flow computation
+        Mat img;
+        frame.copyTo(img);
+        cvtColor(img, img, COLOR_BGR2GRAY);
+
+        // if a previous frame exists go ahead with computations
+        if (prevgray.empty() == false ) {
+
+            // perform optical flow
+            calcOpticalFlowFarneback(prevgray, img, flowUmat, 0.4, 1, 12, 2, 8, 1.2, 0);
+            flowUmat.copyTo(flow);
+
+            // create flow mask
+            for (int y = 0; y < frame_width; y++) {
+                for (int x = 0; x < frame_width; x++) {
+                    // get the flow from y, x position * 10 for better visibility
+                    const Point2f flowatxy = flow.at<Point2f>(y, x) * 10;
+                    double xVector = flowatxy.x + 128;
+                    double yVector = flowatxy.y + 128;
+                    double magnitude = sqrt(pow((xVector - 128), 2) + pow((yVector - 128), 2));// sqrt[(x-128)^2+(y-128)^2]
+                    flowMask.at<cv::Vec3b>(y,x)[0] = xVector;
+                    flowMask.at<cv::Vec3b>(y,x)[1] = yVector;
+                    flowMask.at<cv::Vec3b>(y,x)[2] = magnitude;
+                }
+            }
+        } else {
+            img.copyTo(prevgray);
+        }
+        // path to flow frame
+        file = output_folder + to_string(frame_num) + "-flow.jpg";
+        packet << "    \"flow_frame\": \"" << file << "\"," << endl;
+        imwrite( file, flowMask );
+
         // perform yolo
         vector<DetectedObject> detection;
         yolo.detect(frame, detection);
-
-        result << "        {" << std::endl;
-        result << "            \"id\": " << frame_num << "," << endl;
-        result << "            \"objects\": [" << endl;
+        packet << "    \"objects\": [" << endl;
 
         // write results to file stream
         for(int i = 0; i < detection.size(); i++) {
             DetectedObject &o = detection[i];
 
-            result << "                {" << std::endl;
-            result << "                    \"id\": " << i << "," << endl;
-            result << "                    \"type\": " << o.object_class << "," << endl;
-            result << "                    \"probability\": " << o.prob << "," << endl;
-            result << "                    \"x\": " << int(o.bounding_box.x) << "," << endl;
-            result << "                    \"y\": " << int(o.bounding_box.y) << "," << endl;
-            result << "                    \"width\": " << int(o.bounding_box.width) << "," << endl;
-            result << "                    \"height\": " << int(o.bounding_box.height) << endl;
+            // draw object boxes
+            rectangle(yoloFrame, o.bounding_box, Scalar(0, 0, 255), 2);
+            const char *class_name = yolo.getNames()[o.object_class];
+            char str[255];
+            sprintf(str, "%s", class_name);
+            putText(yoloFrame, str, Point2f(o.bounding_box.x, o.bounding_box.y), FONT_HERSHEY_SIMPLEX, 0.6,
+                    Scalar(0, 0, 255), 2);
+
+            packet << "        {" << endl;
+            packet << "            \"id\": " << i << "," << endl;
+            packet << "            \"type\": " << o.object_class << "," << endl;
+            packet << "            \"probability\": " << o.prob << "," << endl;
+            packet << "            \"x\": " << int(o.bounding_box.x) << "," << endl;
+            packet << "            \"y\": " << int(o.bounding_box.y) << "," << endl;
+            packet << "            \"width\": " << int(o.bounding_box.width) << "," << endl;
+            packet << "            \"height\": " << int(o.bounding_box.height) << endl;
             if (i == detection.size() - 1) {
-                result << "                }" << endl;
+                packet << "        }" << endl;
             } else {
-                result << "                }," << endl;
+                packet << "        }," << endl;
             }
         }
-        result << "            ]" << endl;
-        if (frame_num == 100) {
-            result << "        }" << endl;
-        } else {
-            result << "        }," << endl;
-        }
-    }
-    // finish writing to file
-    result << "    ]" << endl;
-    result << "}" << endl;
+        packet << "    ]," << endl;
 
-    endpoint.send(id, result.str());
+        // path to yolo frame
+        file = output_folder + to_string(frame_num) + "-yolo.jpg";
+        packet << "    \"yolo_frame\": \"" << file << "\"" << endl;
+        imwrite( file, yoloFrame );
+
+        packet << "}" << endl;
+
+        cout << "Sending result for frame: " << frame_num << endl;
+        endpoint.send(id, packet.str());
+    }
 
     usleep(3000000);
 
     // close connection
+    cout << "Closing web socket connection." << endl;
     int close_code = websocketpp::close::status::normal;
     string reason = "Ending process";
     endpoint.close(id, close_code, reason);
