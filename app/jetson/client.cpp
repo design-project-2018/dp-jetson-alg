@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 
     // repeatedly do computations for each frame
     int n = 1;
-    while(n<100) {
+    while(n<1000) {
 
         string original_file = "/home/nvidia/Downloads/output/"+to_string(n)+"-original.jpg";
         string yolo_file = "/home/nvidia/Downloads/output/"+to_string(n)+"-yolo.jpg";
@@ -157,7 +157,7 @@ int main(int argc, char** argv)
         result = imread(result_file, CV_LOAD_IMAGE_COLOR); 
 
         cout << "Displaying frame: " << to_string(n) << endl;
-        displayFrames("YOLO and Optical Flow", 4, original, yolo, flow, result);
+        displayFrames("Smart Dashboard Camera", 4, original, yolo, flow, result);
         n += 1;
         usleep(100000);
     }
