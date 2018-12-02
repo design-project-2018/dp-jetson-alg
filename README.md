@@ -1,6 +1,6 @@
-# Design Project Jetson Board Algorithm
+# Design Project Preprocessor Algorithm
 
-This repository holds the code for the machine learning algorithm process that will be used for real time
+This repository holds the code for the machine learning algorithm preprecessor that will be used for real time
 rear end detection. The compiled executable created from this project will be ran as a child process through
 the Design Project Jetson Board Server.
 
@@ -33,7 +33,7 @@ Once installed, you can open up CLion by entering the follow command.
 /opt/clion-2016.2/bin/clion.sh
 ```
 
-## Running Main Algorithm
+## Running Main Preprocessor
 
 In order to run our project, we must compile it using cmake which will build an executable file.
 As of now the executable takes in a sample video input which is put in as a command line argument.
@@ -44,7 +44,7 @@ cd <PROJECT ROOT DIRECTORY>
 mkdir build && cd build
 cmake .. && make
 cd ..
-./dp_jetson_board <PATH TO VIDEO FOOTAGE>
+./preprocessor <PATH TO VIDEO FOOTAGE>
 ```
 
 ## Running Object Extractor
@@ -61,7 +61,3 @@ cmake .. && make
 cd ..
 ./object_extractor <PATH TO INPUT VIDEO> <OUTPUT FOLDER>
 ```
-
-## Deploying The Project
-
-TBD
